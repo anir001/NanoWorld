@@ -156,7 +156,7 @@ class World:
         """
         self.lives.update(self.foods, self.lives)
         self.check_collision()
-        if random.random() < 0.1 and len(self.foods) < 150:
+        if random.random() < 0.05 and len(self.foods) < 250:
             self.food_spawn()
 
     def check_collision(self):
@@ -229,7 +229,7 @@ class World:
 
         self.init()
         print('Init done\nSize of population: {}'.format(len(self.lives)))
-                
+
         while True:
             if self.game_over:
                 return

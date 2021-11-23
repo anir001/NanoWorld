@@ -11,8 +11,6 @@ from settings import DISH_SIZE, MAX_AGE, MAX_ENERGY, MAX_FPS
 from utils import randomize
 
 
-IMG_PATH = os.path.join('image', 'biter', '32bit-octopus-dumbo1.png')
-
 CONFIG = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                      neat.DefaultSpeciesSet, neat.DefaultStagnation,
                      'config')
@@ -101,21 +99,27 @@ class Biter(pygame.sprite.Sprite):
         # 1 - sąsiedztwo food y = (0 - brak, 0.5 - góra, 1 dół
         # 2 - sąsiedztwo ścian x = (0 - brak, 0.5 - lewa, 1 prawa,
         # 3 - sąsiedztwo ścian y = (0 - brak, 0.5 - góra, 1 dół
-        self.infos = [0, 0, 0, 0]
+        self.infos = [0, max_dist, 0, 0]
         previous_diff = max_dist
         # foods --------------
         for b in self.foods:
             diff = self.__dist2__(b.rect.center)
             if diff < max_dist and diff < previous_diff:
-                if b.rect.centerx < self.rect.centerx:
-                    self.infos[0] = -1
-                if b.rect.centerx > self.rect.centerx:
-                    self.infos[0] = 1
-                if b.rect.centery < self.rect.centery:
-                    self.infos[1] = -1
-                if b.rect.centery > self.rect.centery:
-                    self.infos[1] = 1
+
+                dx = b.rect.centerx - self.rect.centerx
+                dy = self.rect.centery - b.rect.centery
+                rads = math.atan2(dy, dx)
+                self.infos[0] = rads
+                # if b.rect.centerx < self.rect.centerx:
+                #     self.infos[0] = -1
+                # if b.rect.centerx > self.rect.centerx:
+                #     self.infos[0] = 1
+                # if b.rect.centery < self.rect.centery:
+                #     self.infos[1] = -1
+                # if b.rect.centery > self.rect.centery:
+                #     self.infos[1] = 1
                 previous_diff = diff
+                self.infos[1] = diff / max_dist
         # ściany ------------
         if self.rect.left < 5:
             self.infos[2] = -1
